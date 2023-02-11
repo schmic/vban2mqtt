@@ -1,2 +1,14 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import type { PageData } from './$types'
+
+	export let data: PageData
+</script>
+
+{#each Object.keys(data.store) as streamName}
+	<h2>
+		{streamName}
+	</h2>
+	{#each Object.entries(data.store[streamName]) as [channelControl, options]}
+		<p>{channelControl} - {JSON.stringify(options)}</p>
+	{/each}
+{/each}
