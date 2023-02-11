@@ -4,6 +4,10 @@ A fresh project to connect your VoiceMeeter to Home-Assistant via MQTT.
 
 This is a very early stage where things will definetly change, so expect things to brake at some point or not.
 
+## VoiceMeeter
+
+Find the user manual here: https://vb-audio.com/Voicemeeter/Voicemeeter_UserManual.pdf
+
 ## Developing
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
