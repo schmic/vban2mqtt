@@ -2,15 +2,15 @@ import { readFile, stat, writeFile } from 'fs/promises'
 import mqtt from './mqtt'
 import {
 	binarySensorDiscoveryTopic,
-	binarySensorHAConfig,
+	discoveryTopic,
+	haConfig,
 	sensorDiscoveryTopic,
-	sensorHAConfig,
 } from './mqtt.topics'
 
-type ChannelControlOptions = {
+export type ChannelControlOptions = {
 	type: 'slider' | 'button'
 	name: string
-	ignore: boolean
+	publish: boolean
 }
 
 type Store = {
@@ -19,26 +19,51 @@ type Store = {
 	}
 }
 
+const publishOnAdd = false
+const defaultOptions = (name: string): ChannelControlOptions => {
+	return {
+		type: 'slider',
+		name,
+		publish: publishOnAdd,
+	}
+}
+
 export const store: Store = await initStore()
 
 export async function add(streamName: string, channelControl: string) {
 	store[streamName] = store[streamName] || {}
 
-	if (!store[streamName][channelControl]) {
-		store[streamName][channelControl] = {
-			type: 'slider',
-			name: channelControl,
-			ignore: false,
-		}
-		console.debug('👉 add, streamName, channelControl', streamName, channelControl)
-		mqtt.publish(
-			sensorDiscoveryTopic(streamName, channelControl),
-			sensorHAConfig(streamName, channelControl),
-			{ retain: true },
-		)
+	if (store[streamName][channelControl]) return
+
+	const options = defaultOptions(channelControl)
+	store[streamName][channelControl] = options
+	writeFile('store.json', JSON.stringify(store, undefined, 2))
+
+	console.debug('👉 add, streamName, channelControl', streamName, channelControl)
+
+	update(streamName, channelControl, options)
+}
+
+export async function update(
+	streamName: string,
+	channelControl: string,
+	options: ChannelControlOptions,
+) {
+	const optionsBefore = store[streamName][channelControl]
+	store[streamName][channelControl] = options
+	writeFile('store.json', JSON.stringify(store, undefined, 2))
+
+	console.debug('👉 update, streamName, channelControl', streamName, channelControl, options)
+
+	if (optionsBefore.type !== options.type) {
+		mqtt.publish(discoveryTopic(streamName, channelControl, optionsBefore), '')
 	}
 
-	writeFile('store.json', JSON.stringify(store, undefined, 2))
+	mqtt.publish(
+		discoveryTopic(streamName, channelControl, options),
+		options.publish ? haConfig(streamName, channelControl, options) : '',
+		{ retain: options.publish },
+	)
 }
 
 export async function setupHADevices() {
@@ -49,27 +74,17 @@ export async function setupHADevices() {
 		Object.entries(channelControls).forEach((entry) => {
 			const [channelControl, options] = entry
 
-			if (options.ignore) {
-				console.log(`👉 ignore ${streamName}/${channelControl}`)
-				return
-			}
-
 			console.debug(
-				`   [streamName: ${streamName}], [channelControl: ${channelControl}], [options: ${options}]`,
+				`   [streamName: ${streamName}], [channelControl: ${channelControl}],\n     [options: ${JSON.stringify(
+					options,
+				)}]`,
 			)
 
-			if (options.type === 'slider')
-				mqtt.publish(
-					sensorDiscoveryTopic(streamName, channelControl),
-					sensorHAConfig(streamName, channelControl, options.name),
-					{ retain: true },
-				)
-			if (options.type === 'button')
-				mqtt.publish(
-					binarySensorDiscoveryTopic(streamName, channelControl),
-					binarySensorHAConfig(streamName, channelControl, options.name),
-					{ retain: true },
-				)
+			mqtt.publish(
+				discoveryTopic(streamName, channelControl, options),
+				options.publish ? haConfig(streamName, channelControl, options) : '',
+				{ retain: options.publish },
+			)
 		})
 	})
 }

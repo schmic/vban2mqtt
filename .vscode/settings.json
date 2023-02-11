@@ -4,5 +4,13 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": true,
         "source.organizeImports": true
+    },
+    "eslint.format.enable": true,
+    "eslint.lintTask.enable": true,
+    "[svelte]": {
+        "editor.defaultFormatter": "svelte.svelte-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }
