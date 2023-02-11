@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  vban2mqtt:
+    build:
+      context: .
+    image: vban2mqtt:latest
+    environment:
+      - MQTT_HOSTNAME=${MQTT_HOSTNAME}
+    ports:
+      - 3000:3000
+      - 6980:6980/udp
+    volumes:
+      - ./store.json:/opt/vban2mqtt/store.json
