@@ -46,7 +46,8 @@ vban.on('message', (packet, sender) => {
 
 				const { streamName } = packet
 				const channelControl = `${channel}_${control}`
-				console.debug('👉 stateTopic', stateTopic(streamName, channelControl), value)
+
+				// console.debug('👉 stateTopic', stateTopic(streamName, channelControl), value)
 
 				add(streamName, channelControl)
 
