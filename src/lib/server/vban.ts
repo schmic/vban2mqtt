@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/private'
 import { parseHexToInt } from 'src/lib/utils'
 import {
 	EServicePINGApplicationType,
@@ -62,10 +63,10 @@ vban.on('message', (packet, sender) => {
 vban.on('listening', () => {
 	const address = vban.address()
 	updateAvailabilityTopic()
-	console.log(`👉 VBAN: listening ${address.address}:${address.port}`)
+	console.log(`👉 VBAN: Listening on: ${address.address}:${address.port}`)
 })
 
-vban.bind(6980)
+vban.bind(env.VBAN_PORT ? parseInt(env.VBAN_PORT) : 6980, env.VBAN_ADDRESS)
 
 export default vban
 
