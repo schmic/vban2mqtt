@@ -1,18 +1,8 @@
-# create-svelte
+# vban2mqtt
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+A fresh project to connect your VoiceMeeter to Home-Assistant via MQTT.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+This is a very early stage where things will definetly change, so expect things to brake at some point or not.
 
 ## Developing
 
