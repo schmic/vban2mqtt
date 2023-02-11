@@ -1,5 +1,7 @@
 # vban2mqtt
 
+[![Build and Push Images](https://github.com/schmic/vban2mqtt/actions/workflows/images.yaml/badge.svg)](https://github.com/schmic/vban2mqtt/actions/workflows/images.yaml)
+
 A fresh project to connect your VoiceMeeter to Home-Assistant via MQTT.
 
 This is a very early stage where things will definetly change, so expect things to brake at some point or not.
