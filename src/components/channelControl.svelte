@@ -56,7 +56,13 @@
 				<div class="form-control">
 					<label class="label">
 						<span class="label-text w-16">Publish</span>
-						<input type="checkbox" class="toggle toggle-accent" bind:checked={options.publish} />
+						<input
+							type="checkbox"
+							class="toggle toggle-accent"
+							on:click={() => { options.publish = !options.publish }}
+                            on:change={submit}
+							bind:checked={options.publish}
+						/>
 					</label>
 				</div>
 			</div>
